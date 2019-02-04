@@ -90,6 +90,6 @@ public class DropBoxNetworkClient {
                 .retrieve()
                 .bodyToMono(DropBoxListResponse.class);
 
-        return Flux.mergeSequential(getMeta, getList).collectList().block();
+        return Flux.merge(getMeta, getList).collectList().block();
     }
 }

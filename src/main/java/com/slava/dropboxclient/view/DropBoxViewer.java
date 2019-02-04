@@ -42,8 +42,8 @@ public class DropBoxViewer {
     }
 
     public void showMetaList(List dropBoxMetaListResponse) {
-        DropBoxMetaResponse dropBoxMetaResponse = ((DropBoxMetaResponse) dropBoxMetaListResponse.get(0));
-        List<DropBoxListEntries> dropBoxListEntries = ((DropBoxListResponse) dropBoxMetaListResponse.get(1)).getEntries();
+        DropBoxMetaResponse dropBoxMetaResponse = getObjectOfType(dropBoxMetaListResponse, DropBoxMetaResponse.class);
+        List<DropBoxListEntries> dropBoxListEntries = getObjectOfType(dropBoxMetaListResponse, DropBoxListResponse.class).getEntries();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss").withZone(ZoneId.systemDefault());
 
@@ -67,6 +67,12 @@ public class DropBoxViewer {
             System.out.println(" - /" + listInfo);
         });
         System.out.println("--------------------------------------------------------");
+    }
+
+    private <T> T getObjectOfType(List<?> list, Class<T> type) {
+        return type.cast(list.stream()
+                .filter(e -> type.isAssignableFrom(e.getClass()))
+                .findAny().orElse(null));
     }
 
     public void showNetworkError(String message, WebClientResponseException ex) {
